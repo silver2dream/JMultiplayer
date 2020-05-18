@@ -39,6 +39,12 @@
     <ClCompile Include="JActor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="JCube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="JPlane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="JCamera.h">
@@ -64,6 +70,15 @@
     </ClInclude>
     <ClInclude Include="IController.h">
       <Filter>Header Files\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="JObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="JCube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="JPlane.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

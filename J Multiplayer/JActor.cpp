@@ -9,3 +9,8 @@ void JActor::SetRotation(float InDeltaDir)
 {
 
 }
+
+Utility::FVector3 JActor::GetPosition()
+{
+	return Position;
+}

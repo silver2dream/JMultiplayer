@@ -5,29 +5,17 @@
 
 using namespace std;
 
-JCamera* JCamera::instance = nullptr;
-
-void JCamera::updateLookAt()
-{
-	gluLookAt(Position.X, 1.0f, Position.Z,
-		Position.X + lx, 1.0f, Position.Z + lz,
-		0.0f, 1.0f, 0.0f);
-}
-
-void JCamera::Render()
-{
-	this->updateLookAt();
-}
-
 void JCamera::SetPosition(float InDeltaMove)
 {
+	if (AttachParent != nullptr) {
+		Position.Z += InDeltaMove;
+		return;
+	}
+
 	if (InDeltaMove == 0) return;
 
-	cout << InDeltaMove << endl;
-
 	Position.X += InDeltaMove * lx * 0.1f;
-	Position.Z += InDeltaMove * lz * 0.1f;
-	cout << Position.X << endl;
+	Position.Z -= InDeltaMove * lz * 0.1f;
 }
 
 void JCamera::SetRotation(float InDeltaDir)
@@ -39,10 +27,21 @@ void JCamera::SetRotation(float InDeltaDir)
 	lz = -cos(angle);
 }
 
-JCamera* JCamera::GetInstance()
+void JCamera::SetupAttachment(JActor* InParent)
 {
-	if (instance == nullptr) {
-		instance = new JCamera();
-	}
-	return instance;
+	AttachParent = InParent;
+}
+
+void JCamera::Update()
+{
+	this->updateLookAt();
+}
+
+void JCamera::updateLookAt()
+{
+	gluLookAt(
+		Position.X, Position.Y, Position.Z,
+		Position.X + lx, 1.f, Position.Z + lz,
+		0.0f, 1.0f, 0.0f
+	);
 }

@@ -124,7 +124,9 @@
     <ClCompile Include="JActor.cpp" />
     <ClCompile Include="JCamera.cpp" />
     <ClCompile Include="JController.cpp" />
+    <ClCompile Include="JCube.cpp" />
     <ClCompile Include="JPawn.cpp" />
+    <ClCompile Include="JPlane.cpp" />
     <ClCompile Include="JPlayer.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -134,7 +136,10 @@
     <ClInclude Include="JActor.h" />
     <ClInclude Include="JCamera.h" />
     <ClInclude Include="JController.h" />
+    <ClInclude Include="JCube.h" />
+    <ClInclude Include="JObject.h" />
     <ClInclude Include="JPawn.h" />
+    <ClInclude Include="JPlane.h" />
     <ClInclude Include="JPlayer.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>

@@ -12,6 +12,8 @@
 #include "JCamera.h"
 #include "JPlayer.h"
 #include "JPawn.h"
+#include "JCube.h"
+#include "JPlane.h"
 
 using namespace std;
 
@@ -25,51 +27,16 @@ vector<IRender*> ObjectConatiner;
 
 JController* PlayerController = nullptr;
 
-void MouseHandle(int ButtonId, int State, int x, int y) {
-	if (ButtonId == GLUT_LEFT_BUTTON)
-	{
-		cout <<"Position: "<< x << "," << y << endl;
-	}
-}
-
-void DrawCube() {
-	glColor3f(0.5f, 0.5f, 0.5f);
-	glTranslatef(0.0f, 1.f, 0.0f);
-	glutSolidCube(1.f);
-}
-
 void renderScene() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
-
+	
 	PlayerController->Update();
-
 	for (auto object : ObjectConatiner) {
 		if (object != nullptr) {
 			object->Render();
 		}
 	}
-
-	glColor3f(0.9f, 0.9f, 0.9f);
-	glBegin(GL_QUADS);
-	glVertex3f(-100.0f, 0.0f, -100.0f);
-	glVertex3f(-100.0f, 0.0f, 100.0f);
-	glVertex3f(100.0f, 0.0f, 100.0f);
-	glVertex3f(100.0f, 0.0f, -100.0f);
-	glEnd();
-
-	glColor3f(0.f, 0.f, 1.f);
-	glTranslatef(0.f, 0.f, 0.0f);
-	glutSolidCube(1.f);
-
-	glTranslatef(0.f, 1.f, 0.0f);
-	for (int i = -3; i < 3; i++)
-		for (int j = -3; j < 3; j++) {
-			glPushMatrix();
-			glTranslatef(i * 10.0f, 0, j * 10.0f);
-			DrawCube();
-			glPopMatrix();
-		}
 
 	glutSwapBuffers();
 }
@@ -89,13 +56,20 @@ void onWindowChange(GLsizei w, GLsizei h) {
 void init() {
 	srand(time(NULL));
 
-	//JPlayer* Player = new JPlayer();
-	JCamera* Camera = JCamera::GetInstance();
-	//ObjectConatiner.push_back(dynamic_cast<IRender*>(Player));
-	ObjectConatiner.push_back(dynamic_cast<IRender*>(Camera));
+	JPlayer* Player = new JPlayer();
+	ObjectConatiner.push_back(dynamic_cast<IRender*>(Player));
+
+	auto Plane = new JPlane(100.f);
+	ObjectConatiner.push_back(dynamic_cast<IRender*>(Plane));
+
+	for (int i = -3; i < 3; i++)
+		for (int j = -3; j < 3; j++) {
+			auto Cube = new JCube(FVector3(i * 10.f, 1.f, j * 10.f));
+			ObjectConatiner.push_back(dynamic_cast<IRender*>(Cube));
+		}
 
 	PlayerController = new JController();
-	PlayerController->Attach(dynamic_cast<JActor*>(Camera));
+	PlayerController->Attach(dynamic_cast<JActor*>(Player));
 }
 
 void OnPressKey(int key, int x, int y) {
@@ -104,6 +78,50 @@ void OnPressKey(int key, int x, int y) {
 
 void OnReleaseKey(int key, int x, int y) {
 	PlayerController->ReleaseKey(key, x, y);
+}
+
+void OnPressMouseButton(int ButtonId, int State, int x, int y) {
+	PlayerController->MouseButton(ButtonId, State, x, y);
+}
+
+void OnMouseMotion(int x, int y) {
+	PlayerController->MouseMove(x, y);
+}
+
+#define RED 1
+#define GREEN 2
+#define BLUE 3
+#define ORANGE 4
+
+void processMenuEvents(int option) {
+	/*switch (option) {
+	case RED:
+		red = 1.0f;
+		green = 0.0f;
+		blue = 0.0f; break;
+	case GREEN:
+		red = 0.0f;
+		green = 1.0f;
+		blue = 0.0f; break;
+	case BLUE:
+		red = 0.0f;
+		green = 0.0f;
+		blue = 1.0f; break;
+	case ORANGE:
+		red = 1.0f;
+		green = 0.5f;
+		blue = 0.5f; break;
+	}*/
+}
+
+void CreateGLUTMenus() {
+	int menu;
+	menu = glutCreateMenu(processMenuEvents);
+	glutAddMenuEntry("Red", RED);
+	glutAddMenuEntry("Blue", BLUE);
+	glutAddMenuEntry("Green", GREEN);
+	glutAddMenuEntry("Orange", ORANGE);
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
 
 int main(int argc, char *argv[])
@@ -122,7 +140,8 @@ int main(int argc, char *argv[])
 	glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 	glutCreateWindow("OpenGL Application");
 
-	glutMouseFunc(&MouseHandle);
+	glutMouseFunc(OnPressMouseButton);
+	glutMotionFunc(OnMouseMotion);
 	glutSpecialFunc(OnPressKey);
 	glutIgnoreKeyRepeat(1);
 	glutSpecialUpFunc(OnReleaseKey);

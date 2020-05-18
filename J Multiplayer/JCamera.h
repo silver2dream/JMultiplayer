@@ -3,26 +3,24 @@
 #include "IRender.h"
 #include "JActor.h"
 
-class JCamera : public JActor, public IRender {
+class JCamera : public JActor {
 
 public:
-	static JCamera* GetInstance();
+	JCamera() {
+		Position = FVector3(0.f, 1.0f, 0.0f);
+	};
 
-	virtual void Render() override;
+	void Update();
 	virtual void SetPosition(float InDeltaMove) override;
 	virtual void SetRotation(float InDeltaDir) override;
 
-private:
-	JCamera() {
-		Position = FVector3(0.f, 1.f, 5.0f);
-	};
+	void SetupAttachment(JActor* InParent);
 
+private:
 	void updateLookAt();
 
-	static JCamera* instance;
-	float deltaAngle = 0.f;
-	float deltaMove = 0.f;
-	float angle = 1.f;
+	JActor* AttachParent;
+	float angle = 0.f;
 	float lx = 0.f;
 	float lz = -1.f;
 };
